@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>PUZZZLE - Arquitetura Mental</title>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Syne:wght@400;700;800&display=swap');
+:root{--bs:5px 5px 0px #000}
+body{font-family:'Space Grotesk',sans-serif;background-color:#f0f0f0;color:#1a1a1a;overflow-x:hidden}
+h1,h2,h3,.brand{font-family:'Syne',sans-serif}
+.tile-3d{background:#fff;border:3px solid #000;box-shadow:var(--bs);transition:all .1s}
+.tile-3d:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0px #000;z-index:10}
+.tile-3d:active{transform:translate(2px,2px);box-shadow:2px 2px 0px #000}
+.btn-b{background:#6366f1;color:#fff;border:3px solid #000;font-weight:800;text-transform:uppercase;letter-spacing:1px;box-shadow:4px 4px 0px #000;transition:all .1s;cursor:pointer}
+.btn-b:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0px #000;background:#4f46e5}
+.btn-b:active{transform:translate(3px,3px);box-shadow:0 0 0}
+.btn-b:disabled{background:#9ca3af;cursor:not-allowed;box-shadow:none;transform:none}
+.mod-ov{backdrop-filter:blur(8px);background:rgba(0,0,0,.8)}
+::-webkit-scrollbar{width:10px;background:#fff;border-left:2px solid #000}
+::-webkit-scrollbar-thumb{background:#000}
+@keyframes pop{0%{transform:scale(.9);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes shn{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes blk{0%,100%{color:#fff;text-shadow:none}50%{color:#ef4444;text-shadow:0 0 5px #ef4444}}
+.ani-pop{animation:pop .2s cubic-bezier(.175,.885,.32,1.275)}
+.ani-shn{background-size:200% auto;animation:shn 3s linear infinite}
+.blk-w{animation:blk 2s infinite}
+.l-tilt{transition:transform .3s cubic-bezier(.175,.885,.32,1.275)}
+.l-tilt:hover{transform:rotate(-6deg) scale(1.05)}
+.glitch{position:relative}
+.glitch::after,.glitch::before{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%}
+.glitch::before{left:2px;text-shadow:-1px 0 #ff00c1;clip:rect(44px,450px,56px,0);animation:ga 5s infinite linear alternate-reverse}
+.glitch::after{left:-2px;text-shadow:-1px 0 #00fff9;clip:rect(44px,450px,56px,0);animation:gb 5s infinite linear alternate-reverse}
+@keyframes ga{0%{clip:rect(12px,9999px,32px,0)}100%{clip:rect(65px,9999px,80px,0)}}
+@keyframes gb{0%{clip:rect(89px,9999px,12px,0)}100%{clip:rect(2px,9999px,60px,0)}}
+.puz-bg{background-size:20px 20px;background-image:linear-gradient(to right,rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.05) 1px,transparent 1px)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState:U,useEffect:E}=React, M=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const PL=n=>`https://placehold.co/400x500/1a1a1a/FFF?text=${encodeURIComponent(n||'PUZZZLE')}&font=roboto`;
+const CL=[{id:1,n:'Azul',h:'#3b82f6'},{id:2,n:'Vermelho',h:'#ef4444'},{id:3,n:'Verde',h:'#10b981'},{id:4,n:'Amarelo',h:'#fbbf24'},{id:5,n:'Branco',h:'#ffffff'},{id:6,n:'Preto',h:'#000000'}];
+const DC={Iniciante:'bg-emerald-400',Intermediário:'bg-yellow-400',Avançado:'bg-orange-500 text-white',Expert:'bg-red-600 text-white',Extremo:'bg-purple-900 text-white'};
+
+// PREÇOS CORRIGIDOS - TABELA FINAL
+const D={
+    cf:{siteName:"PUZZZLE",wpp:"5511992566719",shp:"https://shopee.com.br",fs:300},
+    p:[
+        {id:101,n:"Gnomo",pf:"gno",p:35,op:49,s:"3x3",d:"Iniciante",st:15,i:"img/gno/gno1.png",ds:"Pequeno mas enganador. O guardião dos segredos simples.",ic:"🍄"},
+        {id:102,n:"Goblin",pf:"gob",p:35,op:49,s:"3x3",d:"Iniciante",st:12,i:"img/gob/gob1.png",ds:"Caótico e divertido. Ideal para primeiros passos.",ic:"👺"},
+        {id:201,n:"Pandora",pf:"pan",p:45,op:60,s:"4x5",d:"Intermediário",st:6,i:"img/pan/pan1.png",ds:"Abra a caixa do impossível. Cada peça move o destino.",ic:"📦"},
+        {id:202,n:"Klotski",pf:"klo",p:45,op:60,s:"4x5",d:"Iniciante",st:10,i:"img/klo/klo1.png",ds:"O bloco mestre precisa escapar. Um clássico absoluto.",ic:"🎯"},
+        {id:203,n:"Houdini",pf:"hou",p:45,op:65,s:"4x5",d:"Avançado",st:4,i:"img/hou/hou1.png",ds:"Escape da realidade. Movimentos impossíveis se tornam lógicos.",ic:"🎩"},
+        {id:204,n:"Malabarista",pf:"mal",p:45,op:60,s:"4x5",d:"Intermediário",st:8,i:"img/mal/mal1.png",ds:"Equilíbrio perfeito entre caos e ordem.",ic:"🤹"},
+        {id:301,n:"Aquiles",pf:"aqu",p:55,op:75,s:"4x5",d:"Avançado",st:5,i:"img/aqu/aqu1.png",ds:"Uma fraqueza estrutural esconde a solução. Encontre-a.",ic:"⚔️"},
+        {id:401,n:"Saturno",pf:"sat",p:65,op:85,s:"5x5",d:"Expert",st:3,i:"img/sat/sat1.png",ds:"Anéis de lógica que se entrelaçam. Gravidade mental.",ic:"🪐"},
+        {id:501,n:"Shakespeare",pf:"sha",p:75,op:95,s:"4x4",d:"Avançado",st:8,i:"img/sha/sha1.png",ds:"Ser ou não ser resolvido? Eis a questão complexa.",ic:"💀"},
+        {id:601,n:"Hermes",pf:"her",p:95,op:120,s:"5x5",d:"Expert",st:3,i:"img/her/her1.png",ds:"Velocidade e complexidade divina. O mensageiro dos deuses.",ic:"⚡"},
+        {id:602,n:"Medusa",pf:"med",p:95,op:125,s:"5x5",d:"Expert",st:2,i:"img/med/med1.png",ds:"Não olhe diretamente. A lógica aqui petrifica mentes fracas.",ic:"🐍"},
+        {id:603,n:"Yin Yang",pf:"yin",p:95,op:120,s:"5x5",d:"Expert",st:4,i:"img/yin/yin1.png",ds:"Dualidade perfeita. Onde termina um começa o outro.",ic:"☯️"},
+        {id:701,n:"Sansão",pf:"san",p:120,op:160,s:"6x6",d:"Extremo",st:2,i:"img/san/san1.png",ds:"Força bruta não resolve. Apenas a estrutura importa.",ic:"🏛️"},
+        {id:801,n:"Maze",pf:"maz",p:200,op:250,s:"8x8",d:"Extremo",st:1,i:"img/maz/maz1.png",ds:"O labirinto definitivo. Entrada fácil, saída impossível.",ic:"🌀"}
+    ]
+};
+
+function App(){
+    const [c,sC]=U([]),[m,sM]=U(null),[k,sK]=U(0),[sc,sSc]=U(1),[f,sF]=U(''),[sh,sSh]=U(0);
+    const ct=(i,q,im,t)=>{
+        const p=D.p.find(z=>z.id===i);
+        if(p.st<=0) return alert('Esgotado!');
+        sC(o=>{const e=o.find(y=>y.id===i); return e?o.map(y=>y.id===i?{...y,q:y.q+q}:y).filter(z=>z.q>0):[...o,{...p,q:1,i:im||p.i}]});
+        if(t){sSh(1);setTimeout(()=>sSh(0),1000)}
+    };
+    const gImg=(p,id)=>p?`img/${p}/${p}${id}.png`:'';
+    const hErr=(e,n)=>{e.currentTarget.onerror=null;e.currentTarget.src=PL(n)};
+    const tot=c.reduce((a,b)=>a+b.p*b.q,0), mis=D.cf.fs-tot, prg=Math.min(100,(tot/D.cf.fs)*100);
+
+    return (<div className="min-h-screen flex flex-col">
+        <nav className="fixed top-0 w-full z-40 px-4 py-3 pointer-events-none">
+            <div className="max-w-7xl mx-auto flex justify-between items-center pointer-events-auto">
+                <div onClick={()=>window.scrollTo({top:0,behavior:'smooth'})} className="l-tilt cursor-pointer bg-white border-4 border-black p-2 shadow-[4px_4px_0px_#000] flex items-center gap-2 transform -rotate-1">
+                    <div className="bg-black text-white w-10 h-10 flex items-center justify-center font-bold text-xl brand">P</div>
+                    <div><div className="font-black leading-none brand text-lg">PUZZZLE</div><div className="text-xs font-mono">LOGIC_OS</div></div>
+                </div>
+                <button onClick={()=>sK(1)} className="btn-b px-4 py-3 bg-yellow-400 text-black hover:text-white relative">
+                    <i className="fas fa-shopping-cart"></i>
+                    {c.length>0&&<span className="absolute -top-3 -right-3 bg-red-600 text-white border-2 border-black w-8 h-8 flex items-center justify-center font-bold rounded-full">{c.reduce((a,x)=>a+x.q,0)}</span>}
+                </button>
+            </div>
+        </nav>
+        <header className="pt-40 pb-20 px-4 relative overflow-hidden bg-[#0f172a] mb-10 border-b-4 border-black">
+            <div className="absolute top-0 left-0 w-full h-full puz-bg opacity-20 z-0 pointer-events-none"></div>
+            <div className="max-w-6xl mx-auto text-center relative z-10">
+                <div className="inline-block bg-black text-white px-4 py-1 font-mono text-sm mb-6 border border-gray-700 transform -rotate-2 blk-w">⚠ AVISO: ALTAMENTE VICIANTE</div>
+                <h1 className="text-5xl md:text-8xl font-black mb-8 tracking-tighter glitch text-white" data-text="ARQUITETURA MENTAL">ARQUITETURA<br/>MENTAL</h1>
+                <p className="text-xl md:text-2xl text-gray-400 mb-10 max-w-3xl mx-auto font-light font-mono leading-relaxed">
+                    Não vendemos brinquedos. Vendemos <span className="bg-yellow-400 text-black px-2 font-bold">tijolos de lógica</span>. Construa seu intelecto. <br/>
+                    Frete grátis acima de <span className="text-white font-bold">R$ 300,00</span>.
+                </p>
+                <div className="flex flex-wrap justify-center gap-6">
+                    <a href="#loja" className="btn-b bg-white text-black hover:text-white px-10 py-4 text-lg">Iniciar Desafio <i className="fas fa-arrow-right ml-2"></i></a>
+                    <div className="flex items-center gap-4 text-gray-400 font-mono text-sm"><span><i className="fas fa-brain text-pink-500"></i> +200 IQ</span><span><i className="fas fa-cube text-blue-500"></i> PLA Premium</span></div>
+                </div>
+            </div>
+        </header>
+        
+        <section id="loja" className="max-w-7xl mx-auto px-4 mb-16 flex-grow">
+            <div className="flex flex-wrap gap-2 mb-8 justify-center">
+                {['Todos','Iniciante','Intermediário','Avançado','Expert','Extremo'].map(d=>(<button key={d} onClick={()=>sF(d==='Todos'?'':d)} className={`px-4 py-2 border-2 border-black font-bold uppercase transition ${f===d||(!f&&d==='Todos')?'bg-black text-white':'bg-white hover:bg-gray-100 shadow-[4px_4px_0px_#000]'}`}>{d}</button>))}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">{D.p.filter(x=>!f||x.d===f).sort((a,b)=>a.p-b.p).map(p=>(
+                <div key={p.id} onClick={()=>{sM(p);sSc(1)}} className="tile-3d cursor-pointer group relative flex flex-col h-full">
+                    <div className="h-64 border-b-3 border-black bg-gray-100 relative overflow-hidden">
+                        <img src={p.i} onError={e=>hErr(e,p.n)} alt={p.n} className="w-full h-full object-cover transition duration-500 group-hover:scale-110"/>
+                        {p.st<=3&&<div className="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 border border-black blink">RESTAM {p.st}</div>}
+                        <div className={`absolute bottom-2 left-2 text-xs font-bold px-2 py-1 border border-black ${DC[p.d]}`}>{p.d.toUpperCase()}</div>
+                    </div>
+                    <div className="p-4 flex flex-col flex-grow">
+                        <div className="flex justify-between items-start mb-2">
+                            <h3 className="font-black text-lg leading-tight">{p.n}</h3>
+                            <div className="text-right"><div className="text-xs text-gray-400 line-through font-mono">{M(p.op)}</div><div className="font-mono font-bold text-purple-600">{M(p.p)}</div></div>
+                        </div>
+                        <p className="text-xs text-gray-500 line-clamp-2 mb-4 h-8">{p.ds}</p>
+                        <div className="mt-auto"><button onClick={e=>{e.stopPropagation();ct(p.id,1,null,1)}} className="w-full py-2 bg-black text-white font-bold text-lg uppercase hover:bg-gray-800 transition flex items-center justify-center gap-2">Comprar <i className="fas fa-cart-plus text-xs"></i></button></div>
+                    </div>
+                </div>))}
+            </div>
+        </section>
+
+        <footer className="bg-black text-white pt-16 pb-10 border-t-8 border-purple-600 mt-auto">
+            <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-10">
+                <div>
+                    <div className="text-4xl font-black mb-6 tracking-tighter">PUZZZLE_CORP©</div>
+                    <p className="text-gray-500 max-w-md font-mono text-sm mb-4">Criamos artefatos de complexidade para mentes que se recusam a estagnar.</p>
+                    <div className="text-gray-500 max-w-md font-mono text-sm mb-6 space-y-2">
+                        <p className="flex items-center gap-2"><i className="fas fa-map-marker-alt text-purple-500 w-5"></i>Rua Pascoal Tambasco, 114</p>
+                        <p className="flex items-center gap-2"><i className="fas fa-phone text-purple-500 w-5"></i>(11) 99256-6719</p>
+                        <p className="flex items-center gap-2"><i className="fas fa-envelope text-purple-500 w-5"></i> <a href="mailto:pnzzzle@gmail.com" className="hover:text-white">pnzzzle@gmail.com</a></p>
+                    </div>
+                    <div className="flex gap-4">
+                        {[{u:'https://www.facebook.com/pnzzzle',i:'facebook'},{u:'https://www.instagram.com/pnzzzle',i:'instagram'},{u:'https://www.youtube.com/@pnzzzle',i:'youtube'},{u:'https://x.com/qnzzzle',i:'twitter'}].map(s=>(<a key={s.i} href={s.u} target="_blank" className="w-12 h-12 border-2 border-gray-700 flex items-center justify-center hover:bg-white hover:text-black hover:border-white transition"><i className={`fab fa-${s.i} text-xl`}></i></a>))}
+                    </div>
+                </div>
+                <div className="md:text-right"><h4 className="font-bold text-gray-500 mb-4 uppercase tracking-widest">Links de Acesso</h4><div className="space-y-2 font-mono text-lg">{['Rastrear Encomenda','Garantia Vitalícia','Manifesto'].map(l=><a key={l} href="#" className="block hover:text-yellow-400 hover:translate-x-2 transition-transform">-&gt; {l}</a>)}</div><div className="mt-8 text-gray-600 text-xs font-mono">CRIPTOGRAFIA SSL DE PONTA A PONTA.<br/>TODOS OS DIREITOS RESERVADOS 2025.</div></div>
+            </div>
+        </footer>
+
+        {m&&(
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 mod-ov" onClick={()=>sM(null)}>
+                <div className="bg-white w-full max-w-4xl border-4 border-black shadow-[15px_15px_0px_rgba(0,0,0,0.5)] flex flex-col md:flex-row ani-pop overflow-hidden" onClick={e=>e.stopPropagation()}>
+                    <div className="md:w-1/2 bg-gray-100 border-b-4 md:border-b-0 md:border-r-4 border-black p-6 flex flex-col justify-center relative">
+                        <img src={gImg(m.pf,sc)||m.i} onError={e=>hErr(e,m.n)} className="w-full h-auto object-contain drop-shadow-xl transform hover:scale-105 transition duration-300" alt={m.n}/>
+                        <div className="mt-6 text-center"><p className="font-bold text-xs uppercase mb-2 tracking-widest">Selecione o Acabamento:</p><div className="flex justify-center gap-2">{CL.map(r=>(<button key={r.id} onClick={()=>sSc(r.id)} className={`w-8 h-8 rounded-full border-2 border-black transition ${sc===r.id?'scale-125 ring-2 ring-offset-2 ring-black':'hover:scale-110'}`} style={{backgroundColor:r.h}} title={r.n}></button>))}</div><div className="text-xs font-mono mt-2 font-bold uppercase text-gray-500">{CL.find(x=>x.id===sc).n}</div></div>
+                    </div>
+                    <div className="md:w-1/2 p-8 flex flex-col bg-white relative"><button onClick={()=>sM(null)} className="absolute top-4 right-4 text-2xl hover:text-red-600 transition font-black">&times;</button><div className="mb-auto">
+                        <div className="flex gap-2 mb-2"><span className={`px-2 py-1 text-xs font-bold border border-black ${DC[m.d]}`}>{m.d}</span>{m.st<5&&<span className="px-2 py-1 text-xs font-bold bg-red-100 text-red-600 border border-red-600">Últimas {m.st} Unidades</span>}</div>
+                        <h2 className="text-4xl font-black uppercase mb-1">{m.n}</h2>
+                        <div className="flex items-center gap-3 mb-6"><span className="text-xl text-gray-400 line-through decoration-2 font-mono">{M(m.op)}</span><span className="text-4xl font-mono text-purple-600 font-bold">{M(m.p)}</span></div>
+                        <p className="text-gray-700 leading-relaxed mb-6 font-medium border-l-4 border-yellow-400 pl-4">{m.ds}</p>
+                        <ul className="text-sm font-mono space-y-2 text-gray-500 mb-8"><li><i className="fas fa-ruler-combined w-6"></i> Dimensão: {m.s}</li><li><i className="fas fa-cube w-6"></i> Material: PLA Premium</li><li><i className="fas fa-brain w-6"></i> Nível: {m.d}</li></ul></div>
+                        <button onClick={()=>ct(m.id,1,gImg(m.pf,sc),1)} disabled={m.st<=0} className="btn-b w-full py-4 text-lg flex justify-center gap-2 bg-green-500 hover:bg-green-600">{m.st>0?<span><i className="fas fa-cart-plus mr-2"></i> ADICIONAR AGORA</span>:'ESGOTADO'}</button>
+                    </div></div></div>
+        )}
+        <div className={`fixed inset-y-0 right-0 w-full md:w-96 bg-white z-50 shadow-2xl border-l-4 border-black transform transition-transform duration-300 ${k?'translate-x-0':'translate-x-full'}`}>
+            <div className="h-full flex flex-col"><div className="bg-black text-white p-5 flex justify-between items-center border-b-4 border-purple-600"><h2 className="text-2xl font-black uppercase flex items-center gap-2"><i className="fas fa-shopping-bag text-yellow-400"></i> Carrinho</h2><button onClick={()=>sK(0)} className="text-2xl hover:text-yellow-400">&times;</button></div>
+            <div className="flex-1 overflow-y-auto p-4 bg-gray-50">{!c.length?(<div className="h-full flex flex-col items-center justify-center opacity-40"><i className="fas fa-box-open text-6xl mb-4"></i><p className="font-mono">CARRINHO VAZIO</p></div>):c.map(i=>(
+                <div key={i.id} className="bg-white p-3 border-2 border-black shadow-[3px_3px_0px_#ccc] mb-3 flex gap-3"><img src={i.i} onError={e=>hErr(e,i.n)} className="w-16 h-16 object-cover border border-black"/><div className="flex-1"><div className="font-bold text-sm leading-tight mb-1">{i.n}</div><div className="text-purple-600 font-mono text-xs font-bold">{M(i.p)}</div><div className="flex items-center gap-2 mt-2"><button onClick={()=>ct(i.id,-1)} className="px-2 bg-gray-200 hover:bg-red-200 font-bold border border-black text-xs">-</button><span className="text-sm font-bold w-4 text-center">{i.q}</span><button onClick={()=>ct(i.id,1)} className="px-2 bg-gray-200 hover:bg-green-200 font-bold border border-black text-xs">+</button></div></div></div>
+            ))}</div>
+            {c.length>0&&(
+                <div className="p-5 border-t-4 border-black bg-white shadow-[0_-5px_15px_rgba(0,0,0,0.1)]">
+                    {mis<=0?(<div className="mb-6 p-4 border-2 border-black bg-gradient-to-r from-[#FFD700] via-[#FBF2C0] to-[#FFD700] ani-shn shadow-[4px_4px_0px_#000] transform transition-all hover:scale-[1.02] relative overflow-hidden group">
+                            <div className="absolute top-0 left-0 w-full h-full bg-white opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                            <div className="flex items-center justify-center gap-4 text-black relative z-10"><div className="bg-black text-[#FFD700] w-10 h-10 flex items-center justify-center rounded-full border-2 border-white shadow-sm"><i className="fas fa-crown text-lg"></i></div><div><div className="font-black text-sm uppercase tracking-widest leading-none mb-1">FRETE GRÁTIS</div><div className="text-[10px] font-mono font-bold bg-black text-white px-2 py-0.5 inline-block">CONQUISTA DESBLOQUEADA</div></div></div>
+                        </div>):(<div className="mb-6 group"><div className="flex justify-between text-[10px] font-bold uppercase mb-1 text-gray-500 font-mono"><span><i className="fas fa-truck-fast mr-1"></i> Faltam {M(mis)}</span><span>{Math.round(prg)}%</span></div><div className="w-full bg-gray-200 h-2 border border-black relative rounded-full overflow-hidden shadow-inner"><div className="h-full bg-black transition-all duration-700 ease-out relative overflow-hidden" style={{width:`${prg}%`}}></div></div></div>)}
+                    <div className="flex justify-between items-end mb-2 font-mono text-sm text-gray-500"><span>Subtotal:</span><span>{M(tot)}</span></div>
+                    <div className="flex justify-between items-end mb-4 font-mono text-sm text-green-600 font-bold"><span>Frete:</span><span>{mis<=0?'GRÁTIS':'A calcular'}</span></div>
+                    <div className="flex justify-between items-end mb-4 font-mono border-t-2 border-dashed border-gray-300 pt-2"><span>TOTAL:</span><span className="text-4xl font-black tracking-tighter">{M(tot)}</span></div>
+                    <a href={`https://wa.me/${D.cf.wpp}?text=${encodeURIComponent(`🧊 *PEDIDO PUZZZLE LOGIC*\n------------------\n${c.map(x=>`${x.q}x ${x.n} (${M(x.p*x.q)})`).join('\n')}\n------------------\n📦 *Subtotal: ${M(tot)}*\n🚚 *Frete:* ${mis<=0?'GRÁTIS':'A combinar'}\n💰 *TOTAL FINAL: ${M(tot)}*`)}`} target="_blank" className="btn-b block w-full py-4 text-center bg-green-500 border-black mb-2 text-3xl font-bold no-underline hover:text-white leading-none flex items-center justify-center shadow-[4px_4px_0px_#000] hover:shadow-[6px_6px_0px_#000]"><i className="fab fa-whatsapp mr-2"></i> FINALIZAR PEDIDO</a>
+                    <a href={D.cf.shp} target="_blank" className="block text-center text-xs font-bold underline hover:text-orange-500 uppercase tracking-widest mt-4">Ou compre na Shopee</a></div>
+            )}</div>
+        </div>
+        {sh>0&&(<div className="fixed bottom-10 right-10 bg-black text-yellow-400 px-6 py-4 border-2 border-yellow-400 shadow-[6px_6px_0px_#FFD60A] z-[60] font-bold uppercase ani-pop"><i className="fas fa-check mr-2"></i> Item Adicionado!</div>)}
+    </div>)
+}
+const root=ReactDOM.createRoot(document.getElementById('root'));root.render(<App/>);
+</script></body></html>
