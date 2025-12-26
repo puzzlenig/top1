@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="bg-[#0f172a]">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Puzzle Master Pro</title>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="base.js"></script>
+<style>::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:#0f172a}::-webkit-scrollbar-thumb{background:#334155;border-radius:4px}</style>
+</head>
+<body class="bg-[#0f172a]"><div id="root"></div>
+<script>
+const C={'@':'#e63946','#':'#334155','4':'#9d2c75','?':'#1e40af','X':'#f4a261','O':'#e76f51'};
+window.THEME={
+ appWrap:'min-h-screen px-4 pb-20 relative font-sans text-slate-300',
+ headCls:'text-center mb-10',
+ tiCls:'text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-2 inline-block',
+ subCls:'text-gray-400 font-mono tracking-widest text-sm',
+ lbls:['🎮 Jogos','💰 Preço','📐 Grid','⭐ Nível'],
+ menuWrap:'flex justify-center gap-4 mb-8 flex-wrap',
+ mBtn:{b:'px-6 py-2 rounded-lg font-bold border-b-4 active:border-b-0 active:translate-y-1 transition-all text-sm md:text-base',a:'bg-purple-600 border-purple-800 text-white shadow-lg',i:'bg-slate-700 border-slate-800 text-gray-300 hover:bg-slate-600'},
+ subWrap:'flex flex-wrap justify-center gap-2 mb-10',
+ sBtn:{b:'px-4 py-2 rounded-lg font-bold border-b-4 active:border-b-0 active:translate-y-1 transition-all min-w-[80px]',a:'bg-blue-600 border-blue-800 text-white shadow-lg',i:'bg-slate-700 border-slate-800 text-gray-300 hover:bg-slate-600'},
+ btnDesc:'hidden',
+ btnSz:'fixed top-4 right-4 p-2 bg-white/10 hover:bg-white/20 text-white rounded backdrop-blur border border-white/10 z-50 text-xs font-bold transition-colors',
+ txtSz:['⬜ Grande','▦ Pequeno'],
+ sepCls:'text-2xl font-bold text-white capitalize flex items-center gap-3 mb-6 pb-4 border-b border-slate-800',
+ gridCont:'flex flex-wrap -mx-3 max-w-[95%] xl:max-w-7xl mx-auto',
+ card:'bg-slate-800 rounded-xl p-4 shadow-xl border border-slate-700 hover:border-slate-500 hover:-translate-y-1 transition-all h-full flex flex-col group',
+ cardHd:'flex justify-between mb-3',
+ cardTi:'text-lg font-bold text-white truncate pr-2 group-hover:text-blue-400 transition-colors',
+ cardMeta:'text-right shrink-0',
+ bgdBase:'text-xs px-2 py-1 rounded text-white font-bold block mb-1',
+ metaSz:'text-xs text-slate-500 font-mono block',
+ dif:{'Trivial':'bg-teal-500','Fácil':'bg-green-600','Médio':'bg-yellow-600','Difícil':'bg-orange-600','Muito Difícil':'bg-red-600','Complexo':'bg-red-800','Extremo':'bg-purple-600','Sobre-humano':'bg-indigo-600','Impossível':'bg-slate-600'},
+ boardBg:'bg-black rounded-lg p-4 mb-4 shadow-inner border border-slate-900 grow flex items-center justify-center',
+ cvCls:'rounded-lg shadow-2xl bg-black',bgC:'#000',
+ buyBtn:'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white px-6 py-2 rounded-lg font-semibold transition-all text-sm w-full shadow-lg border-b-4 border-blue-900 active:border-b-0 active:translate-y-1 active:shadow-none mt-auto',
+ draw:({x,c,X,Y,S,nb})=>{
+  let G=2,R=6,cl=C[c]||'#94a3b8',{t:u,b:d,l,r:ri}=nb,dx=X+(l?0:G),dy=Y+(u?0:G),w=S-(l?0:G)-(ri?0:G),h=S-(u?0:G)-(d?0:G);
+  x.save();x.beginPath();(x.roundRect||x.rect).call(x,dx,dy,w,h,[u||l?0:R,u||ri?0:R,d||ri?0:R,d||l?0:R]);
+  x.clip();x.fillStyle=cl;x.fillRect(dx-1,dy-1,w+2,h+2);x.restore();
+  x.lineWidth=2;x.lineCap='butt';
+  const M=(a,b)=>x.moveTo(dx+a,dy+b),L=(a,b)=>x.lineTo(dx+a,dy+b),Q=(a,b,c,e)=>x.quadraticCurveTo(dx+a,dy+b,dx+c,dy+e),
+  P=k=>{x.strokeStyle=`rgba(${k},${k},${k},${k?.4:.25})`;x.beginPath()};
+  P(255);if(!l){M(2,h-(d?0:R));!u?(L(2,R),Q(2,2,R,2)):L(2,0)}if(!u){l&&M(0,2);L(w-(ri?0:R),2)}x.stroke();
+  P(0);if(!d){M(l?0:R,h-2);!ri?(L(w-R,h-2),Q(w-2,h-2,w-2,h-R)):L(w,h-2)}if(!ri){d&&M(w-2,h);L(w-2,u?0:R)}x.stroke()
+ }
+};
+</script>
+<script src="app.js"></script>
+</body>
+</html>
