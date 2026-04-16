@@ -1,0 +1,36 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pnzzzle G@mes</title>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script><script src="base.js"></script>
+<style>@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Varela+Round&display=swap');
+body{font-family:'Varela Round',sans-serif;background:radial-gradient(circle,#f8c255 10%,#e66d2d 40%,#8a1c1c 100%);min-height:100vh}h1,h2,h3,button{font-family:'Fredoka One',cursive;letter-spacing:1px}.tc{background:#fff;border:4px solid #000;box-shadow:8px 8px 0 rgba(0,0,0,.2);transition:.2s}.tc:hover{transform:translate(-4px,-4px);box-shadow:12px 12px 0 rgba(0,0,0,.3)}.tb{border:3px solid #000;box-shadow:4px 4px 0 #000;transition:.1s}.tb:active{transform:translate(4px,4px);box-shadow:0 0 0 #000}.at{text-shadow:4px 4px 0 #000;-webkit-text-stroke:2px #000}</style></head>
+<body><div id="root"></div><script>
+const C={'#':'#2d3748','?':'#4fc3f7','@':'#f33'};
+window.THEME={
+ title:'Pnzzzle G@mes',appWrap:'pb-20',headCls:'text-center mb-10',tiCls:'at text-6xl font-black text-white mb-2 transform -rotate-2',
+ headEx:'inline-block bg-black text-white px-4 py-1 rounded-2xl font-bold rotate-1 border-2 border-white font-[Fredoka_One]',
+ lbls:['📺 Design','💰 Preços','📏 Tamanho','🏆 Nível'],
+ menuWrap:'flex justify-center flex-wrap mb-8 gap-2',
+ mBtn:{b:'tb px-6 py-3 rounded-xl font-bold text-lg',a:'!bg-yellow-400 !text-black scale-110',i:'bg-white text-gray-700'},
+ subWrap:'flex flex-wrap justify-center gap-3 mb-12',
+ sBtn:{b:'tb px-4 py-2 rounded-xl font-bold',a:'!bg-blue-500 !text-white scale-105',i:'bg-white text-gray-700'},
+ btnSz:'fixed top-4 right-4 z-50 tb bg-white text-black px-4 py-2 rounded-xl font-bold hover:bg-gray-100',
+ txtSz:['⬜ Maior','▦ Menor'],sepCls:'text-4xl font-black text-white at mb-8 text-center rotate-1 inline-block w-full',sepP:true,
+ gridCont:'flex flex-wrap -mx-3',card:'tc p-4 flex flex-col h-full rounded-2xl relative overflow-hidden',
+ cardDeco:'absolute top-0 right-0 w-16 h-16 bg-white opacity-10 rounded-bl-full',cardHd:'flex justify-between mb-3 z-10',
+ bgdBase:'text-xs px-2 py-1 rounded-full border-2 border-black font-bold block mb-1',
+ dif:{ 'Trivial':'bg-cyan-400', 'Fácil':'bg-green-500', 'Médio':'bg-yellow-400', 'Difícil':'bg-orange-500', 'Muito Difícil':'bg-red-400', 'Complexo':'bg-red-600', 'Extremo':'bg-purple-500', 'Sobre-humano':'bg-indigo-600 text-white', 'Impossível':'bg-gray-800 text-white' },
+ boardBg:'flex justify-center bg-blue-100 border-2 border-black rounded-lg p-2 mb-4',cvCls:'rounded-lg border-4 border-black bg-white',
+ buyBtn:'mt-auto tb w-full bg-blue-500 hover:bg-blue-400 text-white px-6 py-2 rounded-xl font-bold',
+ bgDraw:(x,W,H,S)=>{x.fillStyle='#fff3e0';x.fillRect(0,0,W,H);x.strokeStyle='rgba(0,0,0,0.05)';x.lineWidth=1;x.beginPath();for(let i=0;i<=Math.max(W,H);i+=S){x.moveTo(i,0);x.lineTo(i,H);x.moveTo(0,i);x.lineTo(W,i)}x.stroke()},
+ draw:({x,c,X,Y,S,nb})=>{
+  const G=3,d=k=>k?0:G,w=S-d(nb.l)-d(nb.r),h=S-d(nb.t)-d(nb.b),dx=X+d(nb.l),dy=Y+d(nb.t),R=dx+w,B=dy+h,IC=(fx,fy,m)=>{x.fillStyle='#fff3e0';x.fillRect(fx,fy,G,G);x.beginPath();m();x.stroke()};
+  x.fillStyle=C[c]||'#ffeb3b';x.fillRect(dx,dy,w,h);x.lineWidth=3;x.strokeStyle='#000';x.lineCap='round';
+  if(nb.t&&nb.l&&!nb.tl)IC(dx,dy,()=>(x.moveTo(dx,dy+G),x.lineTo(dx+G,dy+G),x.lineTo(dx+G,dy)));
+  if(nb.t&&nb.r&&!nb.tr)IC(R-G,dy,()=>(x.moveTo(R-G,dy),x.lineTo(R-G,dy+G),x.lineTo(R,dy+G)));
+  if(nb.b&&nb.l&&!nb.bl)IC(dx,B-G,()=>(x.moveTo(dx,B-G),x.lineTo(dx+G,B-G),x.lineTo(dx+G,B)));
+  if(nb.b&&nb.r&&!nb.br)IC(R-G,B-G,()=>(x.moveTo(R,B-G),x.lineTo(R-G,B-G),x.lineTo(R-G,B)));
+  x.beginPath();if(!nb.t){x.moveTo(dx,dy);x.lineTo(R,dy)}if(!nb.b){x.moveTo(dx,B);x.lineTo(R,B)}if(!nb.l){x.moveTo(dx,dy);x.lineTo(dx,B)}if(!nb.r){x.moveTo(R,dy);x.lineTo(R,B)}x.stroke();
+  if(!nb.t&&!nb.l){x.fillStyle=`rgba(255,255,255,${'#?'.includes(c)?.4:.6})`;x.beginPath();x.ellipse(dx+8,dy+8,4,2,Math.PI/4,0,6);x.fill()}
+ }
+};</script><script src="app.js"></script></body></html>

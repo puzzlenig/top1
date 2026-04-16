@@ -1,0 +1,37 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Puzzle Master</title>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script><script src="base.js"></script></head>
+<body class="bg-gray-900">
+<!-- 🔙 HUB -->
+<a href="b3.html" class="fixed top-5 left-5 p-2 bg-white/10 hover:bg-white/20 text-white rounded-lg backdrop-blur-sm transition-all border border-white/10 z-[9999] shadow-xl font-mono text-sm no-underline hover:scale-105 flex items-center gap-2">⬅️ Voltar</a>
+
+<div id="root"></div><script>
+const C={'@':'#e63946','#':'green','4':'#9d2c75','?':'blue','X':'#f4a261','O':'#e76f51','P':'#06a77d'};
+window.THEME={
+ title:'🧩 Puzzle Master',sub:'Desafie sua mente com puzzles incríveis',
+ appWrap:'min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 relative pb-20',
+ headCls:'text-center mb-12',tiCls:'text-5xl font-bold text-white mb-3 drop-shadow-lg',subCls:'text-gray-300 text-lg',
+ lbls:['🎮 Variações','💰 Preço','📐 Grid','⭐ Nível'],
+ menuWrap:'flex justify-center gap-3 mb-8 flex-wrap',
+ mBtn:{b:'px-6 py-3 rounded-lg font-bold transition-all',a:'bg-blue-600 text-white shadow-lg',i:'bg-gray-800 text-gray-300 hover:bg-gray-700'},
+ subWrap:'flex flex-wrap justify-center gap-3 mb-12',
+ sBtn:{b:'px-6 py-3 rounded-lg font-bold transition-all',a:'bg-blue-600 text-white shadow-lg',i:'bg-gray-800 text-gray-300 hover:bg-gray-700'},
+ btnDesc:'text-xs opacity-80',
+ btnSz:'fixed top-5 right-5 z-50 p-2 bg-white/10 hover:bg-white/20 text-white rounded-lg backdrop-blur-sm transition-all border border-white/10 shadow-xl font-mono text-sm',
+ txtSz:['⬜ Grande','▦ Pequeno'],sepCls:'text-3xl font-bold text-white mb-6 pb-2 border-b-2 border-blue-600 inline-block',sepP:true,
+ gridCont:'flex flex-wrap -mx-3',
+ card:'bg-gray-800 rounded-xl p-4 shadow-2xl border border-gray-700 hover:border-gray-500 transition-all hover:scale-105 flex flex-col h-full',
+ cardHd:'flex justify-between items-start mb-3',cardTi:'text-lg font-bold text-white truncate pr-2',cardMeta:'text-right flex-shrink-0',
+ bgdBase:'text-xs px-3 py-1 rounded-full text-white font-semibold block mb-1',metaSz:'text-xs text-gray-400 font-mono block',
+ dif:{ 'Elementar':'bg-teal-500', 'Fácil':'bg-green-600', 'Médio':'bg-yellow-600', 'Difícil':'bg-orange-600', 'Muito Difícil':'bg-red-500', 'Complexo':'bg-red-700', 'Extremo':'bg-purple-600', 'Sobre-humano':'bg-indigo-600', 'Impossível':'bg-slate-900' },
+ boardBg:'flex justify-center items-center bg-gray-900 rounded-lg p-4 mb-4',cvCls:'rounded-lg shadow-xl border-2 border-gray-700',
+ buyBtn:'mt-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors text-sm w-full',
+ drawVoid:(x,X,Y,S)=>{x.fillStyle='#1a1a2e';x.fillRect(X,Y,S,S)},
+ draw:({x,c,X,Y,S,nb})=>{
+  x.fillStyle='#1a1a2e';x.fillRect(X,Y,S,S);const cl=C[c]||'#f39c12',{t,l}=nb;
+  x.fillStyle=cl;x.fillRect(X+5,Y+5,S-10,S-10);x.strokeStyle='white';x.lineWidth=2;x.strokeRect(X+5,Y+5,S-10,S-10);
+  const D=(a,b,ex,ey)=>{x.lineWidth=10;x.strokeStyle='white';x.beginPath();x.moveTo(a,b);x.lineTo(ex,ey);x.stroke();x.lineWidth=15;x.strokeStyle=cl;x.beginPath();x.moveTo(a+(a==ex?0:2),b+(b==ey?0:2));x.lineTo(ex-(a==ex?0:2),ey-(b==ey?0:2));x.stroke();x.strokeStyle='white'};
+  if(t)D(X+4,Y,X+S-4,Y);if(l)D(X,Y+4,X,Y+S-4);if(t&&l&&nb.tl){x.fillStyle=cl;x.fillRect(X-10,Y-10,20,20)}
+ }
+};</script><script src="app.js"></script></body></html>

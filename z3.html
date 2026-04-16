@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fanaticos</title>
+<link href="https://fonts.googleapis.com/css2?family=Carter+One&display=swap" rel="stylesheet">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script><script src="base.js"></script>
+<style>body{font-family:'Carter One'}.cs{box-shadow:6px 6px 0 0 #000}.cts{text-shadow:3px 3px 0 #000}.hb:hover{transform:scale(1.05) rotate(-1deg)}</style></head>
+<body class="bg-yellow-400"><div id="root"></div><script>
+const C={'@':'#e63946','#':'#2d3436','4':'#00d2d3','?':'#55efc4',X:'#fdcb6e',O:'#e17055',P:'#00b894'};
+window.THEME={
+ title:'PUZZZLE FANÁTICOS',sub:'É hora de quebrar a cabeça!',
+ appWrap:'min-h-screen bg-gradient-to-br from-yellow-300 via-orange-400 to-red-600 pb-20 relative',
+ headCls:'text-center mb-10 bg-white p-6 rounded-3xl border-4 border-black cs mx-auto max-w-4xl rotate-1',
+ tiCls:'text-6xl md:text-7xl font-bold text-red-600 mb-2 cts tracking-tighter',
+ subCls:'text-blue-600 text-xl font-bold uppercase tracking-widest',
+ lbls:['Variedade','Preços','Tamanhos','Níveis'],
+ menuWrap:'flex justify-center gap-4 mb-8 flex-wrap',
+ mBtn:{b:'px-6 py-2 rounded-full font-black border-2 border-black uppercase tracking-widest transition-all',a:'bg-blue-500 text-white cs -translate-y-1',i:'bg-white hover:bg-gray-100'},
+ subWrap:'flex flex-wrap justify-center gap-3 mb-12 bg-white/20 p-4 rounded-xl border-2 border-black/10 backdrop-blur-sm',
+ sBtn:{b:'px-4 py-2 rounded-lg border-2 border-black font-bold transition-all',a:'bg-yellow-300 cs scale-110',i:'bg-white hover:bg-gray-50'},
+ btnSz:'fixed top-5 right-5 z-50 bg-white px-4 py-2 rounded-full border-4 border-black font-black cs hb uppercase text-sm',
+ txtSz:['⬜ Grande','▦ Pequeno'],sepCls:'inline-block bg-black text-white px-8 py-2 rounded-t-xl font-bold text-2xl border-x-4 border-t-4 border-white mb-[-4px] relative z-10 mx-4',
+ gridCont:'bg-white p-6 rounded-3xl border-4 border-black cs min-h-[400px] flex flex-wrap -mx-3',
+ card:'bg-white rounded-xl p-4 border-4 border-black cs hb transition-transform h-full flex flex-col',
+ cardHd:'flex justify-between items-start mb-3 border-b-2 border-black pb-2 border-dashed',
+ cardTi:'text-xl font-bold truncate pr-2',cardMeta:'text-right flex-col flex items-end',
+ bgdBase:'text-xs px-2 py-1 rounded border-2 border-black text-white font-bold mb-1 uppercase block',
+ dif:{ 'Elementar':'bg-cyan-400', 'Fácil':'bg-green-500', 'Médio':'bg-yellow-400 !text-black', 'Difícil':'bg-orange-500', 'Muito Difícil':'bg-red-500', 'Complexo':'bg-red-700', 'Extremo':'bg-purple-600', 'Sobre-humano':'bg-indigo-800', 'Impossível':'bg-black text-white' },
+ boardBg:'flex justify-center rounded-lg bg-blue-100 border-2 border-black border-dotted p-2 mb-4',
+ cvCls:'rounded-lg border-4 border-black bg-black',bgC:'#2d3436',
+ buyBtn:'bg-red-500 text-white border-2 border-black px-6 py-2 rounded-full font-black text-lg cs active:translate-y-1 active:shadow-none uppercase w-full',
+ draw:({x,c,X,Y,S,nb})=>{
+  const cl=C[c]||'#fdcb6e',{t,l}=nb,F=(k,a,b,w,h)=>{x.fillStyle=k;x.fillRect(a,b,w,h)},L=(w,k,xa,ya,xb,yb)=>{x.lineWidth=w;x.strokeStyle=k;x.beginPath();x.moveTo(xa,ya);x.lineTo(xb,yb);x.stroke()};
+  F(cl,X+3,Y+3,S-6,S-6);x.lineWidth=4;x.strokeStyle='white';x.strokeRect(X+3,Y+3,S-6,S-6);
+  if(t){L(8,'white',X+5,Y,X+S-5,Y);L(10,cl,X+5,Y,X+S-5,Y);L(4,'white',X+3,Y-2,X+3,Y+5);L(4,'white',X+S-3,Y-2,X+S-3,Y+5)}
+  if(l){L(8,'white',X,Y+5,X,Y+S-5);L(10,cl,X,Y+5,X,Y+S-5);L(4,'white',X-2,Y+3,X+5,Y+3);L(4,'white',X-2,Y+S-3,X+5,Y+S-3)}
+  if(t&&l&&nb.tl)F(cl,X-5,Y-5,10,10);
+ },
+ drawVoid:(x,a,b,s)=>{x.fillStyle='#353b48';x.fillRect(a+10,b+10,s-20,s-20)}
+};</script><script src="app.js"></script></body></html>
